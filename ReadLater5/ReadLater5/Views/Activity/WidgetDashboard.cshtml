@@ -1,0 +1,38 @@
+﻿@model Entity.DTOs.UserActivityDto
+@{ var i = 1; ;
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <h3>Most popular bookmarks</h3>
+            <table class="table table-success">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Short Description</th>
+                        <th>URL</th>
+                        <th>Created</th>
+                        <th>Clicked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ i = 1; ;
+                    }
+                    @foreach (var item in Model.mostPopularBookmarks)
+                    {
+                        <tr>
+                            <td>@(i++)</td>
+                            <td>@item.ShortDescription</td>
+                            <td>@item.URL</td>
+                            <td>@item.CreateDate</td>
+                            <td>@item.SumActivity</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

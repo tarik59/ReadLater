@@ -1,0 +1,123 @@
+﻿@model Entity.Bookmark
+@{
+    ViewData["Title"] = "Create";
+}
+<style>
+    .off {
+        display: none;
+    }
+
+    .on {
+        display: normal;
+    }
+
+    .add-new-category {
+        border: 1px solid green;
+        border-top: 0px;
+    }
+
+    .category-input {
+        width: 80%;
+        padding: 10px;
+    }
+}
+</style>
+
+<div id="form" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="exampleModalLabel">Create Bookmark</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Create">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="URL" class="control-label"></label>
+                        <input asp-for="URL" class="form-control" />
+                        <span asp-validation-for="URL" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShortDescription" class="control-label"></label>
+                        <input asp-for="ShortDescription" class="form-control" />
+                        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryId" class="control-label"></label>
+
+                        <div class="d-flex">
+                            <select asp-for="CategoryId" class="form-control mx-1" id="category-list" asp-items="ViewBag.CategoryId" style="padding-right:2px"></select>
+                            <span>
+                                <button type="button" class="btn btn-outline-success category-form-toggle">
+                                    <i style="font-size:20px;line-height:50%" class="bi bi-plus">
+                                    </i>
+                                </button>
+                            </span>
+                        </div>
+
+                        <div class="add-new-category off">
+                            <div class="form-group category-input">
+                                <label class="control-label">Name</label>
+                                <input class="form-control" id="category-name" />
+                            </div>
+                            <div class="p-1">
+                                <button type="button" class="btn btn-success" onclick="addCategory()">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                        <label asp-for="CreateDate" class="control-label"></label>
+                        <input asp-for="CreateDate" class="form-control" />
+                        <span asp-validation-for="CreateDate" class="text-danger"></span>
+                    </div>*@
+                    @*<div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                     </div>*@
+                </div>
+                <div class="modal-footer border-top-0 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    var allowAdd = false;
+    document.getElementsByClassName("category-form-toggle")[0].addEventListener("click", function () {
+        allowAdd = !allowAdd;
+        controllAdd();
+    })
+    function controllAdd() {
+        if (!allowAdd) {
+            $(".add-new-category").removeClass("on");
+            $(".add-new-category").addClass("off");
+        }
+        else {
+            $(".add-new-category").removeClass("off");
+            $(".add-new-category").addClass("on");
+        }
+    }
+    function addCategory() {
+        var name = $("#category-name").val();
+        var model = {
+            ID: 0,
+            Name: name
+        };
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(model),
+            url: "Categories/AddCategory",
+            contentType: "application/json"
+        }).done(function (res) {
+            allowAdd = false;
+            controllAdd();
+            $("#category-list").append('<option value="' + res.id + '">' + res.name + '</option>');
+        });
+    }
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

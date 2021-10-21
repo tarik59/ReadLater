@@ -1,0 +1,130 @@
+﻿@model IEnumerable<Entity.Bookmark>
+@{
+    //ViewData["Title"] = "Index";
+    //Uri uri = new Uri("https://www.alibaba.com/product-detail/Watch-Case-Gift-Box-Watches-Custom_62119260294.html?spm=a2700.7735675.normal_offer.d_image.220a610dqelW63&s=p");
+    //var url=uri.Host;
+}
+@*<div id="form" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @{
+                await Html.RenderPartialAsync("Create", new Entity.Bookmark());
+            }
+        </div>
+    </div>
+</div>*@
+<style>
+     .kebab-menu {
+        width: 30px;
+        height: 30px;
+        background-image: radial-gradient(circle, black 3px, transparent 3px);
+        background-size: 100% 33.33%;
+        margin-left: 100px;
+        margin-top: -10px;
+        background-color:transparent;
+        border:none;
+    }
+    .scrollable {
+        margin-top: 50px;
+        margin-left: 50px;
+        width: 1000px;
+        height: 500px;
+        overflow-y: scroll;
+    }
+</style>
+<div class="container scrollable">
+    <div class="text-right">
+        <button type="button" class="btn btn-success" onclick="createBookmark()" style="border-radius:30px">
+            <i style="font-size:20px;line-height:50%" class="bi bi-plus">
+            </i>
+        </button>
+    </div>
+    @foreach (var item in Model)
+    {
+        <div  class="row p-1 border-bottom">
+            <div class="col-lg-10">
+                <p class="text-muted">@item.Category.Name</p>
+                <h3><a href="@item.URL" onclick="storeClickActivity('@item.ID')">@item.ShortDescription</a></h3>
+            </div>
+            <div class="col-lg-6">
+                <p class="text-muted">
+                    @{
+                        var uri = new Uri(item.URL).Host;
+                        // var url = uri.Host;
+                    }
+                    @uri;
+                </p>
+               
+            </div>
+            <p class="float-right text-muted" style="margin-left:160px">
+                @{
+                    var prettyDate = item.CreateDate.ToString("MMMM dd , yyyy");
+
+                }
+                @prettyDate
+               
+                <div class="dropdown">
+                    <button class="kebab-menu" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false"></button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item" onclick="editBookmark('@item.ID')">Edit</button>
+                        <button class="dropdown-item" onclick="deleteBookmark('@item.ID')">Delete</button>
+                    </div>
+                </div>
+            </p>
+            
+        </div>
+    }
+</div>
+<div id="modalWrapper">
+</div>
+<script>
+    function storeClickActivity(id) {
+        console.log(id);
+        $.ajax({
+            type: "POST",
+            data: id,
+            url: "Activity/StoreUserActivity",
+            contentType: "application/json"
+        }).done(function (res) {
+        });
+    }
+    $(window).on("beforeunload", function () {
+        console.log("navigate")
+    });
+    function editBookmark(id) {
+        console.log("DA")
+        $.ajax({
+            url: '/Bookmarks/Edit/' + id, 
+            success: function (data) {
+                $('#modalWrapper').html(data);
+                $(function () {
+                    $('#form').modal();
+                });
+            }
+        });
+    }
+    function createBookmark() {
+        console.log("DA")
+        $.ajax({
+            url: '/Bookmarks/Create', 
+            success: function (data) {
+                $('#modalWrapper').html(data);
+                $(function () {
+                    $('#form').modal();
+                });
+            }
+        });
+    }
+    function deleteBookmark(id) {
+        console.log("DA")
+        $.ajax({
+            url: '/Bookmarks/Delete/'+ id,
+            success: function (data) {
+                $('#modalWrapper').html(data);
+                $(function () {
+                    $('#form').modal();
+                });
+            }
+        });
+    }
+</script>

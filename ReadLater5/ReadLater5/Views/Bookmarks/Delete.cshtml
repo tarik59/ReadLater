@@ -1,0 +1,30 @@
+﻿@model Entity.Bookmark
+
+
+
+<div id="form" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header flex-column">
+                    @*<div class="icon-box">
+            <i class="material-icons"></i>
+        </div>*@
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title w-100">Are you sure?</h4>
+
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to delete <small class="font-italic font-weight-bolder">@Model.ShortDescription</small> ?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a  class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="ID"  />
+                        <button type="submit" class="btn btn-danger" >Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
